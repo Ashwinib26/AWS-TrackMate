@@ -1,23 +1,39 @@
-import { useState } from "react";
-import { mockActivities } from "../data/MockActivities.jsx";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import ActivityCard from "../components/ActivityCard.jsx";
 import AddActivityForm from "../components/AddActivity.jsx";
 
 export default function Dashboard() {
-  const [activities, setActivities] = useState(mockActivities);
+  const [activities, setActivities] = useState([]);
   const [showForm, setShowForm] = useState(false);
 
-  const addActivity = (activity) => {
-    setActivities([...activities, { ...activity, id: Date.now() }]);
-    setShowForm(false);
+  // Fetch activities from backend on mount
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/activities")
+      .then((res) => setActivities(res.data))
+      .catch((err) => console.error("Error fetching activities:", err));
+  }, []);
+
+  // Add new activity
+  const addActivity = async (activity) => {
+    try {
+      const res = await axios.post("http://localhost:5000/activities", activity);
+      setActivities([...activities, res.data]);
+      setShowForm(false);
+    } catch (err) {
+      console.error("Error adding activity:", err);
+    }
   };
 
-  const completeActivity = (id) => {
-    setActivities(
-      activities.map((a) =>
-        a.id === id ? { ...a, status: "completed" } : a
-      )
-    );
+  // Mark activity as completed
+  const completeActivity = async (id) => {
+    try {
+      const res = await axios.patch(`http://localhost:5000/activities/${id}`, { status: "Completed" });
+      setActivities(activities.map((a) => (a._id === id ? res.data : a)));
+    } catch (err) {
+      console.error("Error completing activity:", err);
+    }
   };
 
   return (
@@ -39,7 +55,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {activities.map((activity) => (
               <ActivityCard
-                key={activity.id}
+                key={activity._id}
                 activity={activity}
                 onComplete={completeActivity}
               />

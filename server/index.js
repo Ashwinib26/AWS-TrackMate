@@ -1,21 +1,21 @@
+// server/index.js
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 
 dotenv.config();
-
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  useUnifiedTopology: true
 })
 .then(() => console.log("✅ MongoDB Connected"))
-.catch((err) => console.error("❌ MongoDB Error:", err));
+.catch(err => console.error("❌ MongoDB Error:", err));
 
 // Activity Schema
 const activitySchema = new mongoose.Schema({
@@ -23,7 +23,9 @@ const activitySchema = new mongoose.Schema({
   description: String,
   status: { type: String, default: "Pending" },
   dueAt: Date,
-  reminderAt: Date
+  reminderAt: Date,
+  priority: { type: String, default: "Medium" },
+  category: String
 });
 
 const Activity = mongoose.model("Activity", activitySchema);
