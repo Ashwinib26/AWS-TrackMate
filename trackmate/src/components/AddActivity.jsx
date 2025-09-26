@@ -16,7 +16,7 @@ export default function AddActivityForm({ onAdd, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAdd(form);
+    onAdd(form); // The parent Dashboard.jsx will handle sending this to MongoDB
   };
 
   return (
@@ -27,7 +27,6 @@ export default function AddActivityForm({ onAdd, onClose }) {
         </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Title */}
           <input
             name="title"
             placeholder="Title"
@@ -36,7 +35,6 @@ export default function AddActivityForm({ onAdd, onClose }) {
             className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
 
-          {/* Description */}
           <textarea
             name="description"
             placeholder="Description"
@@ -45,7 +43,6 @@ export default function AddActivityForm({ onAdd, onClose }) {
             className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
 
-          {/* Due and Reminder */}
           <div className="flex flex-col gap-2">
             <label className="text-gray-600 font-medium">Due At:</label>
             <input
@@ -56,6 +53,7 @@ export default function AddActivityForm({ onAdd, onClose }) {
               className="border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
           </div>
+
           <div className="flex flex-col gap-2">
             <label className="text-gray-600 font-medium">Reminder At:</label>
             <input
@@ -67,7 +65,6 @@ export default function AddActivityForm({ onAdd, onClose }) {
             />
           </div>
 
-          {/* Priority & Category */}
           <div className="flex gap-4 mt-2">
             <div className="flex flex-col w-1/2">
               <label className="text-gray-600 font-medium">Priority:</label>
@@ -82,6 +79,7 @@ export default function AddActivityForm({ onAdd, onClose }) {
                 <option value="High">High</option>
               </select>
             </div>
+
             <div className="flex flex-col w-1/2">
               <label className="text-gray-600 font-medium">Category:</label>
               <select
@@ -98,7 +96,6 @@ export default function AddActivityForm({ onAdd, onClose }) {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end gap-3 mt-6">
             <button
               type="button"

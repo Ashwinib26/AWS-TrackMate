@@ -57,7 +57,7 @@ export default function ActivityCard({ activity, onComplete }) {
       {/* Complete button */}
       {activity.status !== "Completed" && (
         <button
-          onClick={() => onComplete(activity.id)}
+          onClick={() => onComplete(activity._id)}
           className="mt-4 w-full bg-green-500 text-white py-2 rounded-lg shadow hover:bg-green-600 transition font-medium"
         >
           Mark Complete

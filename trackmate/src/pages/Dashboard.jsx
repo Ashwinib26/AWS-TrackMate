@@ -6,33 +6,46 @@ import AddActivityForm from "../components/AddActivity.jsx";
 export default function Dashboard() {
   const [activities, setActivities] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Set base URL for axios
+  axios.defaults.baseURL = "http://localhost:5000";
 
   // Fetch activities from backend on mount
   useEffect(() => {
     axios
-      .get("http://localhost:5000/activities")
+      .get("/activities")
       .then((res) => setActivities(res.data))
-      .catch((err) => console.error("Error fetching activities:", err));
+      .catch((err) => {
+        console.error("Error fetching activities:", err);
+        setError("Failed to fetch activities.");
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // Add new activity
   const addActivity = async (activity) => {
     try {
-      const res = await axios.post("http://localhost:5000/activities", activity);
+      const res = await axios.post("/activities", activity);
       setActivities([...activities, res.data]);
       setShowForm(false);
     } catch (err) {
       console.error("Error adding activity:", err);
+      alert("Failed to add activity.");
     }
   };
 
-  // Mark activity as completed
+  // Mark activity as completed (optimistic UI update)
   const completeActivity = async (id) => {
+    setActivities(
+      activities.map((a) => (a._id === id ? { ...a, status: "Completed" } : a))
+    );
     try {
-      const res = await axios.patch(`http://localhost:5000/activities/${id}`, { status: "Completed" });
-      setActivities(activities.map((a) => (a._id === id ? res.data : a)));
+      await axios.patch(`/activities/${id}`, { status: "Completed" });
     } catch (err) {
       console.error("Error completing activity:", err);
+      alert("Failed to update activity status.");
     }
   };
 
@@ -50,8 +63,13 @@ export default function Dashboard() {
           </button>
         </div>
 
+        {/* Error */}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
         {/* Activities Grid */}
-        {activities.length > 0 ? (
+        {loading ? (
+          <p className="text-gray-500 text-center mt-10">Loading activities...</p>
+        ) : activities.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {activities.map((activity) => (
               <ActivityCard
