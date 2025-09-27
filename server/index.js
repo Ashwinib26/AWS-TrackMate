@@ -30,8 +30,6 @@ const activitySchema = new mongoose.Schema({
 
 const Activity = mongoose.model("Activity", activitySchema, "TrackMate");
 
-// Routes
-
 // Get all activities
 app.get("/Activities", async (req, res) => {
   try {
