@@ -28,12 +28,12 @@ const activitySchema = new mongoose.Schema({
   category: { type: String, default: "Personal" }
 }, { timestamps: true });
 
-const Activity = mongoose.model("Activity", activitySchema, "activities");
+const Activity = mongoose.model("Activity", activitySchema, "TrackMate");
 
 // Routes
 
 // Get all activities
-app.get("/activities", async (req, res) => {
+app.get("/Activities", async (req, res) => {
   try {
     const activities = await Activity.find().sort({ dueAt: 1 });
     res.status(200).json(activities);
@@ -56,7 +56,7 @@ app.post("/Activities", async (req, res) => {
 });
 
 // Update activity (e.g., mark complete)
-app.patch("/activities/:id", async (req, res) => {
+app.patch("/Activities/:id", async (req, res) => {
   try {
     const updated = await Activity.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updated) return res.status(404).json({ error: "Activity not found" });
@@ -68,7 +68,7 @@ app.patch("/activities/:id", async (req, res) => {
 });
 
 // Delete activity
-app.delete("/activities/:id", async (req, res) => {
+app.delete("/Activities/:id", async (req, res) => {
   try {
     const deleted = await Activity.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ error: "Activity not found" });
